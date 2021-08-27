@@ -1,0 +1,153 @@
+[HTML]
+
+<input type="text" id="myInput" onkeyup="filterRecords()" placeholder="Filter records...">
+<div id="jquery_tbl"></div>
+
+
+
+#################################################################################
+
+[JavaScript]
+
+var filterFlag = 0;
+var tblHeader = ['Order ID','Date','Website','Name','Reason','Email/Phone'];
+var tblBody = [];
+tblBody.push(['10911','17-05-2019','Amazon','J.Smith','Sent incorrect item in error','j@gmail.com']);
+tblBody.push(['10912','02-07-2019','eBay','S.Blogs','Broken items','s@btinternet.com']);
+tblBody.push(['10913','03-07-2019','eBay','M.Kay','Missing items','m@gmail.com']);
+tblBody.push(['10914','03-07-2019','Amazon','A.Sheen','Missing items','a@hotmail.com']);
+var tblBodyFilter;
+
+const itemsPerPage = 100;
+var start = 0;
+var end = start + itemsPerPage;
+
+tblBodyFilter = tblBody.slice(start, end); // first page of records
+createTbl(tblHeader, tblBodyFilter);
+
+var totalPages = Math.ceil( tblBody.length / itemsPerPage );
+var currentPage = 1;
+
+$('#itemsPerPage').html('Page ' + currentPage + ' of ' + totalPages + ' (' +itemsPerPage+ ' items per page)');
+
+$(document).keydown(function(e){
+  switch(e.which){
+    case 37: // left
+      if( 0 != start ){
+        start = start - itemsPerPage;
+        end = start + itemsPerPage;
+
+        tblBodyFilter = tblBody.slice(start, end);
+        createTbl(tblHeader, tblBodyFilter);
+
+        currentPage = 0 == start ? 1 : end / itemsPerPage;
+        $('#itemsPerPage').html('Page ' + currentPage + ' of ' + totalPages + ' (' +itemsPerPage+ ' items per page)');
+      }
+      break;
+
+    case 39: // right
+      if( currentPage < totalPages ){
+        start = start + itemsPerPage;
+        end = start + itemsPerPage;
+
+        tblBodyFilter = tblBody.slice(start, end);
+        createTbl(tblHeader, tblBodyFilter);
+
+        currentPage = 0 == start ? 1 : end / itemsPerPage;
+        $('#itemsPerPage').html('Page ' + currentPage + ' of ' + totalPages + ' (' +itemsPerPage+ ' items per page)');
+      }
+      break;
+
+    default: return; // exit this handler for other keys
+  }
+  e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+
+function createTbl(tblHeader, tblBodyFilter)
+{
+  $('#jquery_tbl').empty();
+
+  var table = $('<table/>').addClass('style-tbl');
+  var thead = $('<thead/>');
+  var trH = $('<tr/>');
+
+  var theadRow;
+  for( i=0; i<tblHeader.length; i++ ){
+    theadRow = $('<th/>').text(tblHeader[i]);
+    trH.append(theadRow);
+  }
+  thead.append(trH);
+  table.append(thead);
+
+  var tbody = $('<tbody/>');
+
+  var trB;
+  var td;
+  for( i=0; i<tblBodyFilter.length; i++ ){
+    trB = $('<tr/>');
+    for( j=0; j<tblBodyFilter[i].length; j++ ){
+      td = $('<td/>').text(tblBodyFilter[i][j]);
+      trB.append(td);
+    }
+    table.append(trB);
+  }
+
+  $('#jquery_tbl').append(table);
+}
+
+// Filter records and create new table from results
+function filterRecords()
+{
+  var input = document.getElementById("myInput");
+  var filter = input.value.toLowerCase();
+
+  if( filter.length > 2 ){
+    tblBodyFilter = [];
+    for( i=0; i<tblBody.length; i++ ){
+      if( tblBody[i][0].toLowerCase().indexOf(filter) > -1 // orderID
+         || tblBody[i][1].toLowerCase().indexOf(filter) > -1 // Date
+         || tblBody[i][2].toLowerCase().indexOf(filter) > -1 // Website
+         || tblBody[i][3].toLowerCase().indexOf(filter) > -1 // Name
+         || tblBody[i][4].toLowerCase().indexOf(filter) > -1 // Reason
+         || tblBody[i][5].toLowerCase().indexOf(filter) > -1 // email / phone
+        ){
+        tblBodyFilter.push( tblBody[i] );
+      }
+    }
+    // console.log(tblBodyFilter);
+    createTbl(tblHeader, tblBodyFilter);
+    $('#numSearchResults').html('#'+tblBodyFilter.length);
+
+    $('#itemsPerPage').html('Page 1 of 1');
+
+    filterFlag = 1;
+  }
+  else if( filterFlag ){
+    tblBodyFilter = tblBody.slice(start, end); // first page of records
+    createTbl(tblHeader, tblBodyFilter);
+    filterFlag = 0;
+    $('#numSearchResults').html('&nbsp;');
+
+    $('#itemsPerPage').html('Page ' + currentPage + ' of ' + totalPages + ' (' +itemsPerPage+ ' items per page)');
+  }
+}
+
+
+
+#################################################################################
+
+[CSS]
+
+table.style-tbl{
+  border-collapse: collapse;
+  margin-bottom: 40px;
+}
+.style-tbl th,.style-tbl td{
+  border: 1px solid #000;
+  padding: 5px;
+  vertical-align: top;
+}
+
+.style-tbl td{ text-align: left; }
+.style-tbl tr:nth-child(2n+2){ background: rgb(228, 238, 250); }
+.style-tbl th{ background: rgb(238, 238, 238); }
