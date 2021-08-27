@@ -1,3 +1,11 @@
+[RESOURCES]
+
+https://code.jquery.com/jquery-1.12.4.min.js
+
+
+
+#################################################################################
+
 [HTML]
 
 <input type="text" id="myInput" onkeyup="filterRecords()" placeholder="Filter records...">
@@ -9,24 +17,24 @@
 
 [JavaScript]
 
-var filterFlag = 0;
-var tblHeader = ['Order ID','Date','Website','Name','Reason','Email/Phone'];
-var tblBody = [];
+let filterFlag = 0;
+let tblHeader = ['Order ID','Date','Website','Name','Reason','Email/Phone'];
+let tblBody = [];
 tblBody.push(['10911','17-05-2019','Amazon','J.Smith','Sent incorrect item in error','j@gmail.com']);
 tblBody.push(['10912','02-07-2019','eBay','S.Blogs','Broken items','s@btinternet.com']);
 tblBody.push(['10913','03-07-2019','eBay','M.Kay','Missing items','m@gmail.com']);
 tblBody.push(['10914','03-07-2019','Amazon','A.Sheen','Missing items','a@hotmail.com']);
-var tblBodyFilter;
+let tblBodyFilter;
 
 const itemsPerPage = 100;
-var start = 0;
-var end = start + itemsPerPage;
+let start = 0;
+let end = start + itemsPerPage;
 
 tblBodyFilter = tblBody.slice(start, end); // first page of records
 createTbl(tblHeader, tblBodyFilter);
 
-var totalPages = Math.ceil( tblBody.length / itemsPerPage );
-var currentPage = 1;
+let totalPages = Math.ceil( tblBody.length / itemsPerPage );
+let currentPage = 1;
 
 $('#itemsPerPage').html('Page ' + currentPage + ' of ' + totalPages + ' (' +itemsPerPage+ ' items per page)');
 
@@ -67,11 +75,11 @@ function createTbl(tblHeader, tblBodyFilter)
 {
   $('#jquery_tbl').empty();
 
-  var table = $('<table/>').addClass('style-tbl');
-  var thead = $('<thead/>');
-  var trH = $('<tr/>');
+  let table = $('<table/>').addClass('style-tbl');
+  let thead = $('<thead/>');
+  let trH = $('<tr/>');
 
-  var theadRow;
+  let theadRow;
   for( i=0; i<tblHeader.length; i++ ){
     theadRow = $('<th/>').text(tblHeader[i]);
     trH.append(theadRow);
@@ -79,10 +87,10 @@ function createTbl(tblHeader, tblBodyFilter)
   thead.append(trH);
   table.append(thead);
 
-  var tbody = $('<tbody/>');
+  let tbody = $('<tbody/>');
 
-  var trB;
-  var td;
+  let trB;
+  let td;
   for( i=0; i<tblBodyFilter.length; i++ ){
     trB = $('<tr/>');
     for( j=0; j<tblBodyFilter[i].length; j++ ){
@@ -98,8 +106,8 @@ function createTbl(tblHeader, tblBodyFilter)
 // Filter records and create new table from results
 function filterRecords()
 {
-  var input = document.getElementById("myInput");
-  var filter = input.value.toLowerCase();
+  let input = document.getElementById("myInput");
+  let filter = input.value.toLowerCase();
 
   if( filter.length > 2 ){
     tblBodyFilter = [];
